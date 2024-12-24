@@ -12,4 +12,6 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
 	List<Menu> findByDate(LocalDate date);
 
 	List<Menu> findByType(MealType type);
+	
+	List<Menu> findByDateBetween(LocalDate startDate, LocalDate endDate);
 }
