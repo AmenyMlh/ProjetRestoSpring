@@ -8,5 +8,5 @@ import lombok.Data;
 @Data
 @DiscriminatorValue("Emp")
 public class Employee extends User {
-
+	private String position;
 }

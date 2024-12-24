@@ -8,5 +8,7 @@ import lombok.Data;
 @Data
 @DiscriminatorValue("stud")
 public class Student extends User{
-
+	private String major;
+	private String university;
+	private String year;
 }

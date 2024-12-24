@@ -18,9 +18,9 @@ public class Card {
     private String numCarte;
 
     @OneToOne
-    private User user;
+    private Student student;
 
     private Double solde;
 
-    private Boolean active = true;
+    private Boolean isBlocked = false;
 }

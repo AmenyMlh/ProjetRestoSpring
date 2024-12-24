@@ -47,8 +47,8 @@ public class IngredientController {
     }
 
     @GetMapping("/low-stock/{seuil}")
-    public ResponseEntity<List<Ingredient>> getLowStockIngredients(@PathVariable int seuil) {
-        List<Ingredient> ingredients = ingredientService.getLowStockIngredients(seuil);
+    public ResponseEntity<List<Ingredient>> getLowStockIngredients() {
+        List<Ingredient> ingredients = ingredientService.getLowStockIngredients();
         return ResponseEntity.ok(ingredients);
     }
 }

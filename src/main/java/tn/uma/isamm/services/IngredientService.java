@@ -2,6 +2,8 @@ package tn.uma.isamm.services;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
+
 import tn.uma.isamm.entities.Ingredient;
 
 public interface IngredientService {
@@ -15,5 +17,11 @@ public interface IngredientService {
 
     List<Ingredient> getAllIngredients();
 
-    List<Ingredient> getLowStockIngredients(int seuil);
+	boolean checkStockAvailability(List<Ingredient> ingredients);
+
+	List<Ingredient> getLowStockIngredients();
+
+	List<Ingredient> updateStock(List<Ingredient> ingredients);
+	
+
 }

@@ -10,4 +10,7 @@ public interface MealService {
     List<Meal> findAll();
     Meal update(Long id,Meal meal);
     void delete(Long id);
+	Meal prepareMeal(Long mealId);
+	double calculateTotalPrice(Meal meal);
+	double calculateTotalCostForMeals(List<Meal> meals);
 }

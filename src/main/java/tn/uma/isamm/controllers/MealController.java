@@ -3,6 +3,7 @@ package tn.uma.isamm.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,18 +19,13 @@ public class MealController {
 
     @PostMapping
     public ResponseEntity<Meal> createMeal(@RequestBody Meal meal) {
-        Meal savedMeal = mealService.save(meal);
-        return ResponseEntity.ok(savedMeal);
+        return ResponseEntity.ok(mealService.save(meal));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Meal> getMealById(@PathVariable Long id) {
         Meal meal = mealService.findById(id);
-        if (meal != null) {
-            return ResponseEntity.ok(meal);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(meal);
     }
 
     @GetMapping
@@ -39,17 +35,35 @@ public class MealController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Meal> updateMeal(@PathVariable Long id, @RequestBody Meal meal) {
-        Meal updatedMeal = mealService.update(id, meal);
-        if (updatedMeal != null) {
-            return ResponseEntity.ok(updatedMeal);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(mealService.update(id, meal));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMeal(@PathVariable Long id) {
         mealService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    @PutMapping("/prepareMeal/{mealId}")
+    public ResponseEntity<Meal> prepareMeal(@PathVariable Long mealId) {
+        try {
+            Meal preparedMeal = mealService.prepareMeal(mealId);
+            return new ResponseEntity<>(preparedMeal, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/calculateTotalPrice/{mealId}")
+    public ResponseEntity<Double> calculateTotalPrice(@PathVariable Long mealId) {
+        try {
+            Meal meal = mealService.findById(mealId);
+            
+            double totalPrice = mealService.calculateTotalPrice(meal);
+            
+            return new ResponseEntity<>(totalPrice, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 }
