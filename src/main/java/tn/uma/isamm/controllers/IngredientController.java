@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import tn.uma.isamm.dto.IngredientDto;
 import tn.uma.isamm.entities.Ingredient;
 import tn.uma.isamm.services.IngredientService;
 
@@ -47,8 +48,8 @@ public class IngredientController {
 
     //@PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<Ingredient>> getAllIngredients() {
-        List<Ingredient> ingredients = ingredientService.getAllIngredients();
+    public ResponseEntity<List<IngredientDto>> getAllIngredients() {
+        List<IngredientDto> ingredients = ingredientService.getAllIngredients();
         return ResponseEntity.ok(ingredients);
     }
 

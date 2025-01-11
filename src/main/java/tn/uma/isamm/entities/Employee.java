@@ -8,7 +8,7 @@ import tn.uma.isamm.enums.UserRole;
 
 @Entity
 @Data
-@DiscriminatorValue("EMPLOYEE")
+@DiscriminatorValue("ROLE_EMPLOYEE")
 public class Employee extends User {
 	private String position;
 }

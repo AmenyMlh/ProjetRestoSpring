@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tn.uma.isamm.dto.IngredientDto;
 import tn.uma.isamm.entities.Ingredient;
 import tn.uma.isamm.exceptions.EntityConflictException;
+import tn.uma.isamm.mapper.IngredientMapper;
 import tn.uma.isamm.repositories.IngredientRepository;
 import tn.uma.isamm.services.IngredientService;
 
@@ -64,8 +66,11 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public List<Ingredient> getAllIngredients() {
-        return ingredientRepository.findAll();
+    public List<IngredientDto> getAllIngredients() {
+        return ingredientRepository.findAll()
+                                   .stream()
+                                   .map(IngredientMapper.INSTANCE::toDto)
+                                   .collect(Collectors.toList());
     }
 
     @Override

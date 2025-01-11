@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import tn.uma.isamm.dto.MealDto;
 import tn.uma.isamm.entities.Ingredient;
 import tn.uma.isamm.entities.Meal;
 import tn.uma.isamm.exceptions.InsufficientFundsException;
@@ -37,7 +38,7 @@ public class MealController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Meal>> getAllMeals() {
+    public ResponseEntity<List<MealDto>> getAllMeals() {
         return ResponseEntity.ok(mealService.findAll());
     }
 

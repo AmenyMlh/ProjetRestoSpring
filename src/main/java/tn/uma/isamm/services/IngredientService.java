@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 
+import tn.uma.isamm.dto.IngredientDto;
 import tn.uma.isamm.entities.Ingredient;
 
 public interface IngredientService {
@@ -15,7 +16,7 @@ public interface IngredientService {
 
     Ingredient getIngredientById(Long id);
 
-    List<Ingredient> getAllIngredients();
+    List<IngredientDto> getAllIngredients();
 
 	boolean checkStockAvailability(List<Ingredient> ingredients);
 

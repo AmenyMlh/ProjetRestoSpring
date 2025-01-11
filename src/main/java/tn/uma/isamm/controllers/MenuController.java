@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import tn.uma.isamm.dto.MenuDto;
 import tn.uma.isamm.entities.Menu;
 import tn.uma.isamm.enums.MealType;
 import tn.uma.isamm.exceptions.EntityNotFoundException;
@@ -48,9 +49,9 @@ public class MenuController {
         }
     }
 
-    @GetMapping()
-    public ResponseEntity<List<Menu>> getAllMenus() {
-        List<Menu> menus = menuService.findAll();
+    @GetMapping
+    public ResponseEntity<List<MenuDto>> getAllMenus() {
+        List<MenuDto> menus = menuService.findAll();
         return ResponseEntity.ok(menus);
     }
 

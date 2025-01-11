@@ -8,6 +8,6 @@ import tn.uma.isamm.enums.UserRole;
 
 @Entity
 @Data
-@DiscriminatorValue("ADMIN")
+@DiscriminatorValue("ROLE_ADMIN")
 public class Admin extends User{
 }

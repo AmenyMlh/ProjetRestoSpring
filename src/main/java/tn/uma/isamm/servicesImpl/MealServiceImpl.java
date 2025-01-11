@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import tn.uma.isamm.exceptions.InsufficientFundsException;
+import tn.uma.isamm.dto.MealDto;
 import tn.uma.isamm.entities.Ingredient;
 import tn.uma.isamm.entities.Meal;
 import tn.uma.isamm.entities.MealIngredient;
 import tn.uma.isamm.exceptions.InsufficientStockException;
+import tn.uma.isamm.mapper.MealMapper;
 import tn.uma.isamm.repositories.IngredientRepository;
 import tn.uma.isamm.repositories.MealIngredientRepository;
 import tn.uma.isamm.repositories.MealRepository;
@@ -64,8 +66,11 @@ public class MealServiceImpl implements MealService {
 
 
     @Override
-    public List<Meal> findAll() {
-        return mealRepository.findAll();
+    public List<MealDto> findAll() {
+        return mealRepository.findAll()
+                .stream()
+                .map(MealMapper.INSTANCE::toDto)
+                .toList();
     }
 
     @Override

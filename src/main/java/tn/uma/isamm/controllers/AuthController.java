@@ -6,13 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.jaas.DefaultLoginExceptionResolver;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import tn.uma.isamm.config.JwtTokenProvider;
 import tn.uma.isamm.dto.LoginRequestDto;
 
@@ -27,7 +27,7 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequest) {
-	    System.out.println("Tentative de connexion avec : " + loginRequest.getUsername());
+	    System.out.println("Tentative de connexion avec : " + loginRequest);
 
 	    try {
 	    	System.out.println(loginRequest);
@@ -38,7 +38,7 @@ public class AuthController {
 	            )
 	        );
 
-	        String jwt = jwtTokenProvider.generateToken(authentication.getName());
+	        String jwt = jwtTokenProvider.generateToken(authentication.getName(),"ROLE_STUDENT");
 
 	        return ResponseEntity.ok("Token JWT : " + jwt);
 	    } catch (BadCredentialsException e) {

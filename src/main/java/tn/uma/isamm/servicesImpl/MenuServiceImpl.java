@@ -3,14 +3,17 @@ package tn.uma.isamm.servicesImpl;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
+import tn.uma.isamm.dto.MenuDto;
 import tn.uma.isamm.entities.Meal;
 import tn.uma.isamm.entities.Menu;
 import tn.uma.isamm.enums.MealType;
+import tn.uma.isamm.mapper.MenuMapper;
 import tn.uma.isamm.repositories.MealRepository;
 import tn.uma.isamm.repositories.MenuRepository;
 import tn.uma.isamm.services.MealService;
@@ -55,8 +58,11 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<Menu> findAll() {
-        return menuRepository.findAll();
+    public List<MenuDto> findAll() {
+        List<Menu> menus = menuRepository.findAll();
+        return menus.stream()
+                    .map(MenuMapper.INSTANCE::toDTO)
+                    .collect(Collectors.toList());
     }
 
     @Override

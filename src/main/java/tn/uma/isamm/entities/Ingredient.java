@@ -33,6 +33,8 @@ public class Ingredient {
 
     private int seuil;
     
+    private String unit;
+    
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MealIngredient> mealIngredients;
 }

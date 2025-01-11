@@ -3,6 +3,7 @@ package tn.uma.isamm.entities;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.JoinColumn;
 
@@ -45,7 +46,7 @@ public class Meal {
 
     private String description;
 
-    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<MealIngredient> mealIngredients;
 
     @ManyToOne

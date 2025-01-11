@@ -2,7 +2,10 @@ package tn.uma.isamm.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.annotation.security.RolesAllowed;
 import tn.uma.isamm.entities.Admin;
 import tn.uma.isamm.services.AdminService;
 
@@ -39,8 +42,9 @@ public class AdminController {
         Admin admin = adminService.findById(id);
         return ResponseEntity.ok(admin);
     }
-
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     public ResponseEntity<List<Admin>> getAllAdmins() {
         List<Admin> admins = adminService.findAll();
         return ResponseEntity.ok(admins);

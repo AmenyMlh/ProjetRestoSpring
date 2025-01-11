@@ -11,10 +11,10 @@ import tn.uma.isamm.entities.User;
 public interface UserMapper {
 	UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(target = "id", source = "id")
+   /* @Mapping(target = "id", source = "id")
     UserDto toDTO(User user);
 
     @Mapping(target = "id", source = "id")
-    User toEntity(UserDto userDTO);
+    User toEntity(UserDto userDTO);*/
 
 }

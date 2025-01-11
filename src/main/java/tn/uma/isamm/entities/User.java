@@ -34,7 +34,6 @@ public abstract class User {
     private String email;
     private String firstName;
     private String lastName;
-    @Transient
     @Column(insertable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role;

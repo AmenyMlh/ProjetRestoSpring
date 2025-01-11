@@ -8,7 +8,7 @@ import tn.uma.isamm.enums.UserRole;
 
 @Entity
 @Data
-@DiscriminatorValue("STUDENT")
+@DiscriminatorValue("ROLE_STUDENT")
 public class Student extends User{
 	private String major;
 	private String university;
