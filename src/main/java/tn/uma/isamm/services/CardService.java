@@ -15,4 +15,5 @@ public interface CardService {
 	Card blockCard(String numCarte);
 	Card unblockCard(String numCarte);
 	void checkCardStatus(String numCarte);
+	void deductFromCard(String numCarte, double amount);
 }

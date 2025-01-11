@@ -19,17 +19,17 @@ public class StatisticsController {
 	    @Autowired
 	    private StatisticsService statisticsService;
 
-	    @GetMapping("/meals-served/day/{date}")
+	    @GetMapping("/meals/day/{date}")
 	    public int getMealsServedByDate(@PathVariable LocalDate date) {
 	        return statisticsService.getMealsServedByDate(date);
 	    }
 
-	    @GetMapping("/meals-served/week")
+	    @GetMapping("/meals/week")
 	    public int getMealsServedByWeek(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
 	        return statisticsService.getMealsServedByWeek(startDate, endDate);
 	    }
 
-	    @GetMapping("/meals-served/month")
+	    @GetMapping("/meals/month")
 	    public int getMealsServedByMonth(@RequestParam int year, @RequestParam int month) {
 	        return statisticsService.getMealsServedByMonth(year, month);
 	    }
@@ -49,7 +49,7 @@ public class StatisticsController {
 	        return statisticsService.calculateRestaurantRevenueByMonth(year, month);
 	    }
 
-	    @GetMapping("/most-popular-meals")
+	    @GetMapping("/popular-meals")
 	    public Map<String, Long> getMostPopularMeals() {
 	        return statisticsService.getMostPopularMeals().entrySet().stream()
 	                .collect(Collectors.toMap(

@@ -23,4 +23,17 @@ public class Card {
     private Double solde;
 
     private Boolean isBlocked = false;
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return numCarte != null && numCarte.equals(card.numCarte);
+    }
+
+    @Override
+    public int hashCode() {
+        return numCarte != null ? numCarte.hashCode() : 0;
+    }
 }

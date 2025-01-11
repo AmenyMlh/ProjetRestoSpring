@@ -21,6 +21,10 @@ public class AdminServiceImpl implements AdminService {
     
     @Override
     public Admin save(Admin admin) {
+    	if (adminRepository.existsByEmail(admin.getEmail())) {
+            throw new IllegalArgumentException("L'email existe déjà : " + admin.getEmail());
+        }
+
         return adminRepository.save(admin);
     }
 

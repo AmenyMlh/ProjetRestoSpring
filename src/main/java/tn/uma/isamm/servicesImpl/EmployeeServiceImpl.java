@@ -19,6 +19,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee save(Employee employee) {
+    	if (employeeRepository.existsByEmail(employee.getEmail())) {
+            throw new IllegalArgumentException("L'email existe déjà : " + employee.getEmail());
+        }
+
         return employeeRepository.save(employee);
     }
 

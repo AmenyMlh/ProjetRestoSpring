@@ -7,14 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import tn.uma.isamm.exceptions.InsufficientFundsException;
 import tn.uma.isamm.entities.Ingredient;
 import tn.uma.isamm.entities.Meal;
 import tn.uma.isamm.entities.MealIngredient;
 import tn.uma.isamm.exceptions.InsufficientStockException;
 import tn.uma.isamm.repositories.IngredientRepository;
+import tn.uma.isamm.repositories.MealIngredientRepository;
 import tn.uma.isamm.repositories.MealRepository;
+import tn.uma.isamm.services.CardService;
 import tn.uma.isamm.services.IngredientService;
-import tn.uma.isamm.services.MealIngredientService;
 import tn.uma.isamm.services.MealService;
 
 @Service
@@ -28,25 +31,36 @@ public class MealServiceImpl implements MealService {
     
     @Autowired
     private IngredientService ingredientService;
+    
+    @Autowired
+    private CardService cardService;
 
     @Autowired
-    private MealIngredientService mealIngredientService;
+    private MealIngredientRepository mealIngredientRepository;
 
     @Override
     public Meal save(Meal meal) {
-        if (meal == null) {
-            throw new IllegalArgumentException("Le repas ne peut pas être null");
+        if (meal.getMealIngredients() == null || meal.getMealIngredients().isEmpty()) {
+            throw new IllegalArgumentException("Le plat doit contenir des ingrédients.");
         }
 
         for (MealIngredient mealIngredient : meal.getMealIngredients()) {
+            Ingredient ingredient = ingredientRepository.findById(mealIngredient.getIngredient().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("L'ingrédient avec l'ID " + mealIngredient.getIngredient().getId() + " n'existe pas."));
+
+            if (ingredient.getQuantity() < mealIngredient.getQuantity()) {
+                throw new IllegalArgumentException("Quantité insuffisante pour l'ingrédient " + ingredient.getName());
+            }
+
+            ingredient.setQuantity(ingredient.getQuantity() - mealIngredient.getQuantity());
+            ingredientRepository.save(ingredient);  
+
             mealIngredient.setMeal(meal);  
         }
 
-        double totalPrice = calculateTotalPrice(meal);
-        meal.setPrice(totalPrice);
-
         return mealRepository.save(meal);
     }
+
 
 
     @Override
@@ -81,23 +95,22 @@ public class MealServiceImpl implements MealService {
         mealRepository.deleteById(id);
     }
 
-    @Override
     public Meal prepareMeal(Long mealId) {
         Meal meal = mealRepository.findById(mealId)
                 .orElseThrow(() -> new RuntimeException("Meal avec l'ID: " + mealId + " n'existe pas"));
+
         for (MealIngredient mealIngredient : meal.getMealIngredients()) {
             Ingredient ingredient = mealIngredient.getIngredient();
-            int usedQuantity = mealIngredient.getQuantity();
+            int usedQuantity = mealIngredient.getQuantity(); 
 
             if (ingredient.getQuantity() < usedQuantity) {
-                throw new InsufficientStockException(ingredient.getName());
+                throw new InsufficientStockException("Stock insuffisant pour l'ingrédient : " + ingredient.getName());
             }
-
             ingredient.setQuantity(ingredient.getQuantity() - usedQuantity);
-            ingredientService.saveIngredient(ingredient);
+            ingredientRepository.save(ingredient); 
         }
-
         double totalPrice = calculateTotalPrice(meal);
+
         return meal;
     }
 
@@ -106,14 +119,14 @@ public class MealServiceImpl implements MealService {
         double totalPrice = 0;
 
         for (MealIngredient mealIngredient : meal.getMealIngredients()) {
-            double ingredientPrice = mealIngredient.getIngredient().getPrice();
-            int quantity = mealIngredient.getQuantity();
+            Ingredient ingredient = mealIngredient.getIngredient();
+            int quantity = mealIngredient.getQuantity(); 
+            double ingredientPrice = ingredient.getPrice(); 
             totalPrice += ingredientPrice * quantity;
         }
 
         return totalPrice;
     }
-
 
     @Override
     public Meal findById(Long id) {
@@ -132,6 +145,32 @@ public class MealServiceImpl implements MealService {
             .sum();
     }
     
+    public Meal purchaseMeal(Long mealId, String numCarte) {
+        Meal meal = mealRepository.findById(mealId)
+                .orElseThrow(() -> new RuntimeException("Repas avec l'ID: " + mealId + " n'existe pas"));
+
+        double totalPrice = calculateTotalPrice(meal);
+
+        Double cardBalance = cardService.getSolde(numCarte);
+        if (cardBalance < totalPrice) {
+            throw new InsufficientFundsException("Solde insuffisant sur la carte.");
+        }
+
+        cardService.deductFromCard(numCarte, totalPrice);
+
+        for (MealIngredient mealIngredient : meal.getMealIngredients()) {
+            Ingredient ingredient = mealIngredient.getIngredient(); 
+            int usedQuantity = mealIngredient.getQuantity(); 
+
+            if (ingredient.getQuantity() < usedQuantity) {
+                throw new InsufficientStockException("Stock insuffisant pour l'ingrédient : " + ingredient.getName());
+            }
+            ingredient.setQuantity(ingredient.getQuantity() - usedQuantity);
+            ingredientService.saveIngredient(ingredient); 
+        }
+
+        return meal;
+    }
 
 
 }

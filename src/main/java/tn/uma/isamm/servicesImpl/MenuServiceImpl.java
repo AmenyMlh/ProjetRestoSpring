@@ -11,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import tn.uma.isamm.entities.Meal;
 import tn.uma.isamm.entities.Menu;
 import tn.uma.isamm.enums.MealType;
+import tn.uma.isamm.repositories.MealRepository;
 import tn.uma.isamm.repositories.MenuRepository;
 import tn.uma.isamm.services.MealService;
 import tn.uma.isamm.services.MenuService;
@@ -20,17 +21,28 @@ public class MenuServiceImpl implements MenuService {
 
 	@Autowired
     private MenuRepository menuRepository;
+	
+	@Autowired
+	private MealRepository mealRepository;
 
     @Autowired
     private MealService mealService;
 
-    @Override
-    public Menu save(Menu menu) {
-        if (menu == null) {
-            throw new IllegalArgumentException("Le menu ne peut pas être null");
-        }
-        return menuRepository.save(menu);
-    }
+   @Override
+   public Menu save(Menu menu, List<Long> mealIds) {
+       if (mealIds == null || mealIds.isEmpty()) {
+           throw new IllegalArgumentException("Le menu doit contenir des plats.");
+       }
+
+       List<Meal> meals = mealRepository.findAllById(mealIds);
+       if (meals.size() != mealIds.size()) {
+           throw new IllegalArgumentException("Certains plats spécifiés n'existent pas.");
+       }
+       menu.setMeals(meals);
+       return menuRepository.save(menu);
+   }
+
+
 
     @Override
     public Menu findById(Long id) {
@@ -98,14 +110,9 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public double calculateTotalPriceForMenu(Menu menu) {
-        double totalMenuPrice = 0.0;
-
-        for (Meal meal : menu.getMeals()) {
-            double mealPrice = mealService.calculateTotalPrice(meal);
-            totalMenuPrice += mealPrice;
-        }
-
-        return totalMenuPrice;
+        return menu.getMeals().stream()
+                   .mapToDouble(Meal::getPrice) 
+                   .sum();  
     }
 
 }

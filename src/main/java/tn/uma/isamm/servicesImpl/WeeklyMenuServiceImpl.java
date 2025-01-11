@@ -23,7 +23,7 @@ public class WeeklyMenuServiceImpl {
     @Autowired
     private MenuRepository menuRepository;
 
-    public Map<String, Menu> generateWeeklyMenu() {
+    /*public Map<String, Menu> generateWeeklyMenu() {
         Map<String, Menu> weeklyMenu = new HashMap<>();
 
         weeklyMenu.put("Lundi", createMenuForDay("Lundi"));
@@ -39,7 +39,7 @@ public class WeeklyMenuServiceImpl {
     }
 
     private Menu createMenuForDay(String day) {
-        List<Meal> meals = mealRepository.findMealsForDay(day);
+        List<Meal> meals = mealRepository.findByDay(day);
         
         if (meals == null || meals.isEmpty()) {
             throw new EntityNotFoundException("Aucun repas trouvé pour le jour " + day);
@@ -51,5 +51,5 @@ public class WeeklyMenuServiceImpl {
         menu.setType(MealType.LUNCH); 
 
         return menu;
-    }
+    }*/
 }

@@ -20,12 +20,13 @@ public class MealIngredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "meal_id")
-    private Meal meal;
+	@ManyToOne
+	@JoinColumn(name = "meal_id")
+	private Meal meal;
+
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_id", nullable = false)
+    @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 
     private int quantity;

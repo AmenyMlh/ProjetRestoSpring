@@ -20,12 +20,10 @@ public class StudentServiceImpl implements StudentService {
         if (studentRepository.existsByEmail(student.getEmail())) {
             throw new IllegalArgumentException("L'email existe déjà : " + student.getEmail());
         }
-        if (studentRepository.existsByUsername(student.getUsername())) {
-            throw new IllegalArgumentException("Le nom d'utilisateur existe déjà : " + student.getUsername());
-        }
+
         return studentRepository.save(student);
     }
-
+    
     @Override
     public Student getStudentById(Long id) {
         return studentRepository.findById(id)
@@ -48,7 +46,9 @@ public class StudentServiceImpl implements StudentService {
         existingStudent.setFirstName(student.getFirstName());
         existingStudent.setLastName(student.getLastName());
         existingStudent.setPhone(student.getPhone());
-
+        existingStudent.setUniversity(student.getUniversity());
+        existingStudent.setMajor(student.getMajor());
+        existingStudent.setYear(student.getYear());
         return studentRepository.save(existingStudent);
     }
 

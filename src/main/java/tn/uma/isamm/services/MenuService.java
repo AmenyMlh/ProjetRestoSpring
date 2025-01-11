@@ -7,7 +7,6 @@ import tn.uma.isamm.entities.Menu;
 import tn.uma.isamm.enums.MealType;
 
 public interface MenuService {
-	Menu save(Menu menu);
     Menu findById(Long id);
     List<Menu> findAll();
     Menu update(Long id,Menu menu);
@@ -15,4 +14,5 @@ public interface MenuService {
     List<Menu> getMenusByDate(LocalDate date);
 	double calculateTotalPriceForMenu(Menu menu);
 	List<Menu> getMenusByMealType(MealType type);
+	Menu save(Menu menu, List<Long> mealIds);
 }

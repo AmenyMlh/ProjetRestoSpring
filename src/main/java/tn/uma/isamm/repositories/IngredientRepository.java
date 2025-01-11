@@ -17,4 +17,5 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 	
 	@Query("SELECT COUNT(m) > 0 FROM MealIngredient m WHERE m.ingredient.id = :id")
 	boolean isIngredientUsed(Long id);
+
 }

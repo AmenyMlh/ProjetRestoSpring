@@ -102,9 +102,30 @@ public class CardServiceImpl implements CardService {
         card.setIsBlocked(false);  
         return cardRepository.save(card);  
     }
+    
     @Override
     public void checkCardStatus(String numCarte) {
        
+    }
+    @Override
+    public void deductFromCard(String numCarte, double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Le montant doit être supérieur à 0.");
+        }
+
+        Card card = findByNumCarte(numCarte);
+
+        if (card.getIsBlocked()) {
+            throw new IllegalStateException("La carte est bloquée, impossible de déduire des fonds.");
+        }
+
+        if (card.getSolde() < amount) {
+            throw new IllegalStateException("Solde insuffisant pour effectuer cette transaction.");
+        }
+
+        card.setSolde(card.getSolde() - amount);
+
+        cardRepository.save(card);
     }
 
 }

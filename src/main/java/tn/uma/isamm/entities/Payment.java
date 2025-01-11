@@ -1,11 +1,11 @@
 package tn.uma.isamm.entities;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,16 +16,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @IdClass(PaymentId.class)
 public class Payment {
-	
-	@Id
-	@ManyToOne
-    private Card card;
 
     @Id
     @ManyToOne
-    private Meal meal;
+    @JoinColumn(name = "card_num")
+    private Card card; 
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
 
     private Double amount;
-    private Boolean validated = false;
 
+    private Boolean validated = false;
 }

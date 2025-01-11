@@ -8,6 +8,4 @@ import tn.uma.isamm.entities.Meal;
 
 public interface MealRepository extends JpaRepository<Meal, Long> {
 
-	List<Meal> findMealsForDay(String day);
-
 }

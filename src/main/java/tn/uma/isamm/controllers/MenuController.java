@@ -2,10 +2,12 @@ package tn.uma.isamm.controllers;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import tn.uma.isamm.entities.Menu;
@@ -20,15 +22,21 @@ public class MenuController {
 	@Autowired
     private MenuService menuService;
 
-    @PostMapping()
-    public ResponseEntity<Menu> saveMenu(@RequestBody Menu menu) {
-        try {
-            Menu savedMenu = menuService.save(menu);
-            return ResponseEntity.ok(savedMenu);
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.badRequest().body(null);
-        }
-    }
+	//@PreAuthorize("hasRole('ADMIN')")
+	 @PostMapping
+	    public ResponseEntity<Menu> addMenu(@RequestBody Map<String, Object> data) {
+	        MealType mealType = MealType.valueOf((String) data.get("type"));
+	        LocalDate date = LocalDate.parse((String) data.get("date"));
+	        List<Long> mealIds = (List<Long>) data.get("mealIds");
+
+	        Menu menu = new Menu();
+	        menu.setType(mealType);
+	        menu.setDate(date);
+
+	        Menu savedMenu = menuService.save(menu, mealIds);
+
+	        return ResponseEntity.ok(savedMenu);
+	    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Menu> getMenuById(@PathVariable Long id) {
@@ -46,6 +54,7 @@ public class MenuController {
         return ResponseEntity.ok(menus);
     }
 
+    //@PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Menu> updateMenu(@PathVariable Long id, @RequestBody Menu menu) {
         try {
@@ -56,6 +65,7 @@ public class MenuController {
         }
     }
 
+    //@PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteMenu(@PathVariable Long id) {
         try {
@@ -80,6 +90,7 @@ public class MenuController {
         return ResponseEntity.ok(menus);
     }
 
+   
     @GetMapping("/totalPrice/{id}")
     public ResponseEntity<Double> getTotalPriceForMenu(@PathVariable Long id) {
         try {
