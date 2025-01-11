@@ -20,8 +20,11 @@ import tn.uma.isamm.services.MenuService;
 @RequestMapping("/menus")
 public class MenuController {
 
-	@Autowired
-    private MenuService menuService;
+	private final MenuService menuService;
+
+    public MenuController(MenuService menuService) {
+        this.menuService = menuService;
+    }
 
 	//@PreAuthorize("hasRole('ADMIN')")
 	 @PostMapping

@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import tn.uma.isamm.entities.Employee;
 import tn.uma.isamm.exceptions.EntityConflictException;
 import tn.uma.isamm.repositories.EmployeeRepository;
@@ -14,8 +15,11 @@ import tn.uma.isamm.services.EmployeeService;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
+    
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+    	this.employeeRepository = employeeRepository;
+     }
 
     @Override
     public Employee save(Employee employee) {
@@ -29,10 +33,22 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee update(Employee employee) {
         if (employeeRepository.existsById(employee.getId())) {
-            return employeeRepository.save(employee);
+        	Employee existingEmployee = employeeRepository.findById(employee.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Employé avec ID " + employee.getId() + " n'existe pas"));
+
+        	existingEmployee.setUsername(employee.getUsername());
+        	existingEmployee.setEmail(employee.getEmail());
+        	existingEmployee.setPassword(employee.getPassword());
+        	existingEmployee.setFirstName(employee.getFirstName());
+        	existingEmployee.setLastName(employee.getLastName());
+        	existingEmployee.setPhone(employee.getPhone());
+        	existingEmployee.setPosition(employee.getPosition());
+
+            return employeeRepository.save(existingEmployee);
         }
-        throw new EntityConflictException("L'employé existe déjà avec le nom: " + employee.getUsername());
+        throw new EntityConflictException("L'employé avec ID " + employee.getId() + " n'existe pas");
     }
+
 
     @Override
     public void delete(Long id) {

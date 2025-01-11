@@ -16,8 +16,11 @@ import java.util.List;
 @RequestMapping("/cards")
 public class CardController {
 
-	 @Autowired
-	    private CardService cardService;
+	private final CardService cardService;
+
+    public CardController(CardService cardService) {
+        this.cardService = cardService;
+    }
 
 	    @PreAuthorize("hasRole('ROLE_ADMIN')")
 	    @PostMapping

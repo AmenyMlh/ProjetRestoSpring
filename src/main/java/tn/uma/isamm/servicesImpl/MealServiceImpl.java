@@ -25,20 +25,21 @@ import tn.uma.isamm.services.MealService;
 @Service
 public class MealServiceImpl implements MealService {
     
-    @Autowired
-    private MealRepository mealRepository;
-    
-    @Autowired
-    private IngredientRepository ingredientRepository;
-    
-    @Autowired
-    private IngredientService ingredientService;
-    
-    @Autowired
-    private CardService cardService;
+	private final MealRepository mealRepository;
+    private final IngredientRepository ingredientRepository;
+    private final IngredientService ingredientService;
+    private final CardService cardService;
+    private final MealIngredientRepository mealIngredientRepository;
 
-    @Autowired
-    private MealIngredientRepository mealIngredientRepository;
+    public MealServiceImpl(MealRepository mealRepository, IngredientRepository ingredientRepository, 
+                           IngredientService ingredientService, CardService cardService, 
+                           MealIngredientRepository mealIngredientRepository) {
+        this.mealRepository = mealRepository;
+        this.ingredientRepository = ingredientRepository;
+        this.ingredientService = ingredientService;
+        this.cardService = cardService;
+        this.mealIngredientRepository = mealIngredientRepository;
+    }
 
     @Override
     public Meal save(Meal meal) {

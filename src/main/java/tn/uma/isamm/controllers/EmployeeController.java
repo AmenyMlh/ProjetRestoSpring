@@ -12,8 +12,11 @@ import java.util.List;
 @RequestMapping("/employees")
 public class EmployeeController {
 
-    @Autowired
-    private EmployeeService employeeService;
+	private final EmployeeService employeeService;
+
+	public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
 
     @PostMapping
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
@@ -37,8 +40,12 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
         Employee employee = employeeService.findById(id);
+        if (employee == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(employee);
     }
+
 
     @GetMapping
     public ResponseEntity<List<Employee>> getAllEmployees() {

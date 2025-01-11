@@ -15,8 +15,11 @@ import java.util.List;
 @RequestMapping("/ingredients")
 public class IngredientController {
 
-    @Autowired
-    private IngredientService ingredientService;
+	private final IngredientService ingredientService;
+
+    public IngredientController(IngredientService ingredientService) {
+        this.ingredientService = ingredientService;
+    }
 
     //@PreAuthorize("hasRole('ADMIN')")
     @PostMapping

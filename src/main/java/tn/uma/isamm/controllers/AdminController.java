@@ -15,8 +15,11 @@ import java.util.List;
 @RequestMapping("/admins")
 public class AdminController {
 
-    @Autowired
-    private AdminService adminService;
+	 private final AdminService adminService;
+
+	    public AdminController(AdminService adminService) {
+	        this.adminService = adminService;
+	    }
 
     @PostMapping
     public ResponseEntity<Admin> createAdmin(@RequestBody Admin admin) {

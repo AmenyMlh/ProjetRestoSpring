@@ -22,14 +22,15 @@ import tn.uma.isamm.services.MenuService;
 @Service
 public class MenuServiceImpl implements MenuService {
 
-	@Autowired
-    private MenuRepository menuRepository;
-	
-	@Autowired
-	private MealRepository mealRepository;
+	private final MenuRepository menuRepository;
+    private final MealRepository mealRepository;
+    private final MealService mealService;
 
-    @Autowired
-    private MealService mealService;
+    public MenuServiceImpl(MenuRepository menuRepository, MealRepository mealRepository, MealService mealService) {
+        this.menuRepository = menuRepository;
+        this.mealRepository = mealRepository;
+        this.mealService = mealService;
+    }
 
    @Override
    public Menu save(Menu menu, List<Long> mealIds) {

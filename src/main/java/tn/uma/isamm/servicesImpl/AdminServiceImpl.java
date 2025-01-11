@@ -16,8 +16,11 @@ import java.util.Optional;
 @Service
 public class AdminServiceImpl implements AdminService {
 
-    @Autowired
-    private AdminRepository adminRepository;
+	private final AdminRepository adminRepository;
+
+    public AdminServiceImpl(AdminRepository adminRepository) {
+        this.adminRepository = adminRepository;
+    } 
     
     @Override
     public Admin save(Admin admin) {
@@ -30,11 +33,19 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Admin update(Admin admin) {
-        if (!adminRepository.existsById(admin.getId())) {
-            throw new EntityNotFoundException("L'admin avec l'ID " + admin.getId() + " n'existe pas.");
-        }
-        return adminRepository.save(admin);
+        Admin existingAdmin = adminRepository.findById(admin.getId())
+                .orElseThrow(() -> new EntityNotFoundException("L'admin avec l'ID " + admin.getId() + " n'existe pas."));
+
+        existingAdmin.setUsername(admin.getUsername());
+        existingAdmin.setEmail(admin.getEmail());
+        existingAdmin.setPassword(admin.getPassword());
+        existingAdmin.setFirstName(admin.getFirstName());
+        existingAdmin.setLastName(admin.getLastName());
+        existingAdmin.setPhone(admin.getPhone());
+        
+        return adminRepository.save(existingAdmin);
     }
+
 
     @Override
     public void delete(Long id) {

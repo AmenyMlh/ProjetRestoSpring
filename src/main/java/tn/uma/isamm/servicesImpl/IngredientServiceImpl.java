@@ -17,8 +17,11 @@ import tn.uma.isamm.services.IngredientService;
 @Service
 public class IngredientServiceImpl implements IngredientService {
 
-    @Autowired
-    private IngredientRepository ingredientRepository;
+	private final IngredientRepository ingredientRepository;
+
+    public IngredientServiceImpl(IngredientRepository ingredientRepository) {
+        this.ingredientRepository = ingredientRepository;
+    }
 
     @Override
     public Ingredient saveIngredient(Ingredient ingredient) {

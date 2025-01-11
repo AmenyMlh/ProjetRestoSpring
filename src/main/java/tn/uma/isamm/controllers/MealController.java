@@ -21,8 +21,11 @@ import tn.uma.isamm.services.MealService;
 @RequestMapping("/meals")
 public class MealController {
 
-    @Autowired
-    private MealService mealService;
+	private final MealService mealService;
+
+    public MealController(MealService mealService) {
+        this.mealService = mealService;
+    }
 
     //@PreAuthorize("hasRole('ADMIN')")
     @PostMapping

@@ -14,8 +14,11 @@ import tn.uma.isamm.services.StudentService;
 @RequestMapping("/students")
 public class StudentController {
 
-    @Autowired
-    private StudentService studentService;
+	private final StudentService studentService;
+
+	public StudentController(StudentService studentService) {
+        this.studentService = studentService;
+    }
 
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {

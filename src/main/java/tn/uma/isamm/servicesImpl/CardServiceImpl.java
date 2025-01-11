@@ -15,8 +15,11 @@ import tn.uma.isamm.services.NotificationService;
 @Service
 public class CardServiceImpl implements CardService {
 
-    @Autowired
-    private CardRepository cardRepository;
+	private final CardRepository cardRepository;
+
+    public CardServiceImpl(CardRepository cardRepository) {
+        this.cardRepository = cardRepository;
+    }
     
     private static final double SOLDE_MINIMAL = 10.0;
 

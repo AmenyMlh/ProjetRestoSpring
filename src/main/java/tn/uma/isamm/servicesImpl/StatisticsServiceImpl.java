@@ -15,8 +15,12 @@ import tn.uma.isamm.services.StatisticsService;
 
 @Service
 public class StatisticsServiceImpl implements StatisticsService{
-	    @Autowired
-	    private MenuRepository menuRepository;
+	
+	private final MenuRepository menuRepository;
+
+    public StatisticsServiceImpl(MenuRepository menuRepository) {
+        this.menuRepository = menuRepository;
+    }
 
 	    @Override
 	    public int getMealsServedByDate(LocalDate date) {
