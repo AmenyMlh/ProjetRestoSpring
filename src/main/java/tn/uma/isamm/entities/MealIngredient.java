@@ -1,5 +1,7 @@
 package tn.uma.isamm.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,12 +24,13 @@ public class MealIngredient {
 
 	@ManyToOne
 	@JoinColumn(name = "meal_id")
+	@JsonIgnore
 	private Meal meal;
 
 
     @ManyToOne
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
-
+    
     private double quantity;
 }

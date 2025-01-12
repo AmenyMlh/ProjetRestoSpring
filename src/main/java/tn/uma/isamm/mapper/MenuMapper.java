@@ -3,6 +3,8 @@ package tn.uma.isamm.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.swing.Spring;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -13,7 +15,7 @@ import tn.uma.isamm.entities.Meal;
 import tn.uma.isamm.entities.Menu;
 
 
-@Mapper
+@Mapper(componentModel = "Spring")
 public interface MenuMapper {
 	MenuMapper INSTANCE = Mappers.getMapper(MenuMapper.class);
 
@@ -26,7 +28,5 @@ public interface MenuMapper {
     List<MenuDto> toDTOList(List<Menu> menus);
 
     List<Menu> toEntityList(List<MenuDto> menuDTOs);
-
-
 
 }

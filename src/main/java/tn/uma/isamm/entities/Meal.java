@@ -46,6 +46,7 @@ public class Meal {
     private String description;
 
     @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = false)
+    
     private List<MealIngredient> mealIngredients;
 
 

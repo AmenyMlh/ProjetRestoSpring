@@ -43,10 +43,10 @@ public class MenuController {
 	    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Menu> getMenuById(@PathVariable Long id) {
+    public ResponseEntity<MenuDto> getMenuById(@PathVariable Long id) {
         try {
-            Menu menu = menuService.findById(id);
-            return ResponseEntity.ok(menu);
+            MenuDto menuDto = menuService.findById(id);
+            return ResponseEntity.ok(menuDto);
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.notFound().build();
         }

@@ -28,6 +28,15 @@ public class CardController {
 	        Card savedCard = cardService.save(card);
 	        return new ResponseEntity<>(savedCard, HttpStatus.CREATED);
 	    }
+	    
+	    @PostMapping("/{oldCardNum}/new/{newCardNum}")
+	    public ResponseEntity<Card> createNewCard(
+	            @PathVariable String oldCardNum,
+	            @PathVariable String newCardNum) {
+	        Card newCard = cardService.createNewCardForStudent(oldCardNum, newCardNum);
+	        return ResponseEntity.ok(newCard);
+	    }
+
         
 	    @GetMapping("/{numCarte}")
 	    public ResponseEntity<Card> getCard(@PathVariable String numCarte) {
@@ -72,8 +81,8 @@ public class CardController {
 	    }
 
 	  
-	    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-	    @PutMapping("/employee/block/{numCarte}")
+	    @PreAuthorize("hasRole('ROLE_ADMIN')")
+	    @PutMapping("/admin/block/{numCarte}")
 	    public ResponseEntity<Card> blockCard(@PathVariable String numCarte) {
 	        Card blockedCard = cardService.blockCard(numCarte);
 	        return new ResponseEntity<>(blockedCard, HttpStatus.OK);

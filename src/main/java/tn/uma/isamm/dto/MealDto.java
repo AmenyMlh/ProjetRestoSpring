@@ -2,6 +2,8 @@ package tn.uma.isamm.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,4 +20,6 @@ public class MealDto {
     private MealType mealType;
     private String description;
     private List<IngredientDto> ingredients;
+    private double quantity;
+    private double prix;
 }

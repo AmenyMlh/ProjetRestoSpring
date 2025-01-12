@@ -16,4 +16,5 @@ public interface CardService {
 	Card unblockCard(String numCarte);
 	void checkCardStatus(String numCarte);
 	void deductFromCard(String numCarte, double amount);
+	Card createNewCardForStudent(String oldCardNum, String newCardNum);
 }

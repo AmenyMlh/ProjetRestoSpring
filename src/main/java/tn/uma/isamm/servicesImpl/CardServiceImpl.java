@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tn.uma.isamm.entities.Card;
+import tn.uma.isamm.entities.Student;
 import tn.uma.isamm.exceptions.EntityNotFoundException;
 import tn.uma.isamm.repositories.CardRepository;
 import tn.uma.isamm.services.CardService;
@@ -27,6 +28,37 @@ public class CardServiceImpl implements CardService {
     public Card save(Card card) {
         return cardRepository.save(card);
     }
+    
+    @Override
+    public Card createNewCardForStudent(String oldCardNum, String newCardNum) {
+        Card oldCard = cardRepository.findById(oldCardNum)
+                .orElseThrow(() -> new RuntimeException("Ancienne carte introuvable avec le numéro : " + oldCardNum));
+
+        Student student = oldCard.getStudent();
+        if (student == null) {
+            throw new RuntimeException("Aucun étudiant associé à l'ancienne carte.");
+        }
+
+        if (!oldCard.getIsBlocked()) {
+            oldCard.setIsBlocked(true);
+            cardRepository.save(oldCard);
+        }
+
+        Optional<Card> existingActiveCard = cardRepository.findByStudentAndIsBlockedFalse(student);
+        if (existingActiveCard.isPresent()) {
+            throw new IllegalStateException("Cet étudiant a déjà une carte active.");
+        }
+
+        Card newCard = new Card();
+        newCard.setNumCarte(newCardNum);
+        newCard.setStudent(student);
+        newCard.setSolde(oldCard.getSolde());
+        oldCard.setSolde(0.0);
+        newCard.setIsBlocked(false); 
+
+        return cardRepository.save(newCard);
+    }
+
 
     @Override
     public Card findByNumCarte(String numCarte) {
@@ -59,6 +91,7 @@ public class CardServiceImpl implements CardService {
         }
         cardRepository.deleteById(numCarte);
     }
+    
     @Override
     public Double getSolde(String numCarte) {
         Card card = findByNumCarte(numCarte);

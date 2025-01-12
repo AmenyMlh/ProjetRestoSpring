@@ -14,6 +14,7 @@ import tn.uma.isamm.dto.MenuDto;
 import tn.uma.isamm.entities.Meal;
 import tn.uma.isamm.entities.Menu;
 import tn.uma.isamm.enums.MealType;
+import tn.uma.isamm.mapper.MealMapper;
 import tn.uma.isamm.mapper.MenuMapper;
 import tn.uma.isamm.repositories.MealRepository;
 import tn.uma.isamm.repositories.MenuRepository;
@@ -26,11 +27,13 @@ public class MenuServiceImpl implements MenuService {
 	private final MenuRepository menuRepository;
     private final MealRepository mealRepository;
     private final MealService mealService;
+    private final MenuMapper menuMapper;
 
-    public MenuServiceImpl(MenuRepository menuRepository, MealRepository mealRepository, MealService mealService) {
+    public MenuServiceImpl(MenuRepository menuRepository, MealRepository mealRepository, MealService mealService, MenuMapper menuMapper) {
         this.menuRepository = menuRepository;
         this.mealRepository = mealRepository;
         this.mealService = mealService;
+        this.menuMapper = menuMapper;
     }
 
     @Override
@@ -51,14 +54,17 @@ public class MenuServiceImpl implements MenuService {
 
 
     @Override
-    public Menu findById(Long id) {
+    public MenuDto findById(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("L'ID du menu ne peut pas être null");
         }
 
-        return menuRepository.findById(id)
+        Menu menu = menuRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Menu avec l'ID " + id + " non trouvé"));
+
+        return menuMapper.toDTO(menu);
     }
+
 
     @Override
     public List<MenuDto> findAll() {

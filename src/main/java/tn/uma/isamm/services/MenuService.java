@@ -9,7 +9,7 @@ import tn.uma.isamm.entities.Menu;
 import tn.uma.isamm.enums.MealType;
 
 public interface MenuService {
-    Menu findById(Long id);
+    MenuDto findById(Long id);
     List<MenuDto> findAll();
     Menu update(Long id,Menu menu);
     void delete(Long id);
