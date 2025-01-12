@@ -95,14 +95,9 @@ public class MenuController {
     }
 
    
-    @GetMapping("/totalPrice/{id}")
-    public ResponseEntity<Double> getTotalPriceForMenu(@PathVariable Long id) {
-        try {
-            Menu menu = menuService.findById(id);
-            double totalPrice = menuService.calculateTotalPriceForMenu(menu);
-            return ResponseEntity.ok(totalPrice);
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/totalPrice/{menuId}")
+    public ResponseEntity<Double> getMenuPrice(@PathVariable Long menuId) {
+        double totalPrice = menuService.calculateMenuPriceById(menuId);
+        return ResponseEntity.ok(totalPrice);
     }
 }

@@ -50,6 +50,10 @@ public class MealServiceImpl implements MealService {
         }
 
         for (MealIngredient mealIngredient : meal.getMealIngredients()) {
+            if (mealIngredient.getIngredient() == null) {
+                throw new IllegalArgumentException("L'ingrédient est requis pour chaque MealIngredient.");
+            }
+
             Ingredient ingredient = ingredientRepository.findById(mealIngredient.getIngredient().getId())
                     .orElseThrow(() -> new IllegalArgumentException("L'ingrédient avec l'ID " + mealIngredient.getIngredient().getId() + " n'existe pas."));
 
@@ -58,13 +62,15 @@ public class MealServiceImpl implements MealService {
             }
 
             ingredient.setQuantity(ingredient.getQuantity() - mealIngredient.getQuantity());
-            ingredientRepository.save(ingredient);  
+            ingredientRepository.save(ingredient);
 
             mealIngredient.setMeal(meal);  
         }
 
         return mealRepository.save(meal);
     }
+
+
 
     @Override
     public List<MealDto> findAll() {
@@ -82,7 +88,6 @@ public class MealServiceImpl implements MealService {
     	        MealDto dto = new MealDto();
     	        dto.setId(meal.getId());
     	        dto.setName(meal.getName());
-    	        dto.setPrice(meal.getPrice());
     	        dto.setMealType(meal.getMealType());
     	        dto.setDescription(meal.getDescription());
     	        List<IngredientDto> ingredientDtos = meal.getMealIngredients().stream()
@@ -92,8 +97,9 @@ public class MealServiceImpl implements MealService {
     	                ingredientDto.setName(mi.getIngredient().getName());
     	                ingredientDto.setPrice(mi.getIngredient().getPrice());
     	                ingredientDto.setQuantity(mi.getIngredient().getQuantity());
+    	                ingredientDto.setUnit(mi.getIngredient().getUnit());
     	                ingredientDto.setSeuil(mi.getIngredient().getSeuil());
-
+                        
     	                return ingredientDto;
     	            })
     	            .collect(Collectors.toList());
@@ -102,10 +108,6 @@ public class MealServiceImpl implements MealService {
     	        return dto;
     	    }).collect(Collectors.toList());
     }
-
-
-
-
 
     @Override
     public Meal update(Long id, Meal meal) {

@@ -9,6 +9,8 @@ import jakarta.persistence.JoinColumn;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,10 +40,7 @@ public class Meal {
     @NotBlank(message = "Le nom du plat est obligatoire.")
     private String name;
 
-    @NotNull
-    @Positive(message = "Le prix doit être supérieur à zéro.")
-    private Double price;
-
+    @Enumerated(EnumType.STRING)
     private MealType mealType;
 
     private String description;
@@ -49,9 +48,6 @@ public class Meal {
     @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<MealIngredient> mealIngredients;
 
-    @ManyToOne
-    @JsonBackReference
-    private Menu menu;
 
  
     

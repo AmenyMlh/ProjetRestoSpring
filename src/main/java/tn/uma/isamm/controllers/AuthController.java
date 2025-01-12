@@ -38,7 +38,7 @@ public class AuthController {
 	            )
 	        );
 
-	        String jwt = jwtTokenProvider.generateToken(authentication.getName(),"ROLE_STUDENT");
+	        String jwt = jwtTokenProvider.generateToken(authentication.getName(),"ROLE_ADMIN");
 
 	        return ResponseEntity.ok("Token JWT : " + jwt);
 	    } catch (BadCredentialsException e) {

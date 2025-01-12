@@ -1,6 +1,7 @@
 package tn.uma.isamm.servicesImpl;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,19 +33,20 @@ public class MenuServiceImpl implements MenuService {
         this.mealService = mealService;
     }
 
-   @Override
-   public Menu save(Menu menu, List<Long> mealIds) {
-       if (mealIds == null || mealIds.isEmpty()) {
-           throw new IllegalArgumentException("Le menu doit contenir des plats.");
-       }
+    @Override
+    public Menu save(Menu menu, List<Long> mealIds) {
+        if (mealIds == null || mealIds.isEmpty()) {
+            throw new IllegalArgumentException("Le menu doit contenir des plats.");
+        }
 
-       List<Meal> meals = mealRepository.findAllById(mealIds);
-       if (meals.size() != mealIds.size()) {
-           throw new IllegalArgumentException("Certains plats spécifiés n'existent pas.");
-       }
-       menu.setMeals(meals);
-       return menuRepository.save(menu);
-   }
+        List<Meal> meals = mealRepository.findAllById(mealIds);
+        if (meals.size() != mealIds.size()) {
+            throw new IllegalArgumentException("Certains plats spécifiés n'existent pas.");
+        }
+
+        menu.setMeals(meals); 
+        return menuRepository.save(menu); 
+    }
 
 
 
@@ -118,10 +120,22 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public double calculateTotalPriceForMenu(Menu menu) {
-        return menu.getMeals().stream()
-                   .mapToDouble(Meal::getPrice) 
-                   .sum();  
+    public double calculateMenuPriceById(Long menuId) {
+        Menu menu = menuRepository.findById(menuId)
+            .orElseThrow(() -> new IllegalArgumentException("Menu avec ID " + menuId + " non trouvé"));
+
+        List<Meal> meals = menu.getMeals();
+
+        if (meals == null || meals.isEmpty()) {
+            throw new IllegalArgumentException("Le menu avec ID " + menuId + " ne contient aucun plat.");
+        }
+
+        return meals.stream()
+                .mapToDouble(mealService::calculateTotalPrice) 
+                .sum();
     }
+
+
+
 
 }

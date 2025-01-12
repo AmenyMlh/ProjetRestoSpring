@@ -11,15 +11,18 @@ import org.springframework.stereotype.Service;
 import tn.uma.isamm.entities.Meal;
 import tn.uma.isamm.entities.Menu;
 import tn.uma.isamm.repositories.MenuRepository;
+import tn.uma.isamm.services.MealService;
 import tn.uma.isamm.services.StatisticsService;
 
 @Service
 public class StatisticsServiceImpl implements StatisticsService{
 	
 	private final MenuRepository menuRepository;
+	private final MealService mealService;
 
-    public StatisticsServiceImpl(MenuRepository menuRepository) {
+    public StatisticsServiceImpl(MenuRepository menuRepository,MealService mealService) {
         this.menuRepository = menuRepository;
+        this.mealService = mealService;
     }
 
 	    @Override
@@ -52,17 +55,18 @@ public class StatisticsServiceImpl implements StatisticsService{
 	    public double calculateRestaurantRevenueByDate(LocalDate date) {
 	        List<Menu> menus = menuRepository.findByDate(date);
 	        return menus.stream()
-	                .flatMap(menu -> menu.getMeals().stream())
-	                .mapToDouble(meal -> meal.getPrice())
+	                .flatMap(menu -> menu.getMeals().stream()) 
+	                .mapToDouble(mealService::calculateTotalPrice) 
 	                .sum();
 	    }
+
 
 	    @Override
 	    public double calculateRestaurantRevenueByWeek(LocalDate startDate, LocalDate endDate) {
 	        List<Menu> menus = menuRepository.findByDateBetween(startDate, endDate);
 	        return menus.stream()
-	                .flatMap(menu -> menu.getMeals().stream())
-	                .mapToDouble(meal -> meal.getPrice())
+	        		.flatMap(menu -> menu.getMeals().stream()) 
+	                .mapToDouble(mealService::calculateTotalPrice) 
 	                .sum();
 	    }
 
@@ -72,8 +76,8 @@ public class StatisticsServiceImpl implements StatisticsService{
 	        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
 	        List<Menu> menus = menuRepository.findByDateBetween(startOfMonth, endOfMonth);
 	        return menus.stream()
-	                .flatMap(menu -> menu.getMeals().stream())
-	                .mapToDouble(meal -> meal.getPrice())
+	        		.flatMap(menu -> menu.getMeals().stream()) 
+	                .mapToDouble(mealService::calculateTotalPrice) 
 	                .sum();
 	    }
 

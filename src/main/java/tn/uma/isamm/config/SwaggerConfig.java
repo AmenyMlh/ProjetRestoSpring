@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
     servers = {
-        @Server(url = "http://localhost:8080/", description = "Default Server URL")
+        @Server(url = "http://localhost:8090/", description = "Default Server URL")
     },
     security = {
         @SecurityRequirement(name = "bearerAuth")

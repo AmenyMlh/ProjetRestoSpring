@@ -12,7 +12,6 @@ public class IngredientDto {
     private String name;
     private double price;
     private double quantity;
-    private double usedQuantity;
     private int seuil;
     private String unit;
 }
