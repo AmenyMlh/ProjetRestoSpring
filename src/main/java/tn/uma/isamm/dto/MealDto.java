@@ -15,7 +15,6 @@ import tn.uma.isamm.enums.MealType;
 public class MealDto {
 	private Long id;
     private String name;
-    private Double price;
     private MealType mealType;
     private String description;
     private List<IngredientDto> ingredients;
