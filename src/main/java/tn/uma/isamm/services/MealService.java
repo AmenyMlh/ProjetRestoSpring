@@ -15,4 +15,5 @@ public interface MealService {
 	double calculateTotalPrice(Meal meal);
 	double calculateTotalCostForMeals(List<Meal> meals);
 	Meal purchaseMeal(Long mealId, String numCarte);
+	List<MealDto> getAllMealsWithIngredients();
 }

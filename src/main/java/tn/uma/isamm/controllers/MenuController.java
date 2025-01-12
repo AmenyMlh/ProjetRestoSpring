@@ -26,7 +26,7 @@ public class MenuController {
         this.menuService = menuService;
     }
 
-	//@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	 @PostMapping
 	    public ResponseEntity<Menu> addMenu(@RequestBody Map<String, Object> data) {
 	        MealType mealType = MealType.valueOf((String) data.get("type"));
@@ -58,7 +58,7 @@ public class MenuController {
         return ResponseEntity.ok(menus);
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Menu> updateMenu(@PathVariable Long id, @RequestBody Menu menu) {
         try {
@@ -69,7 +69,7 @@ public class MenuController {
         }
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteMenu(@PathVariable Long id) {
         try {

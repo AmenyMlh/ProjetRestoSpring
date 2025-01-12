@@ -1,13 +1,15 @@
 package tn.uma.isamm.controllers;
 
 import java.util.List;
-
+import java.util.stream.Collectors;
+import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import tn.uma.isamm.dto.IngredientDto;
 import tn.uma.isamm.dto.MealDto;
 import tn.uma.isamm.entities.Ingredient;
 import tn.uma.isamm.entities.Meal;
@@ -27,7 +29,7 @@ public class MealController {
         this.mealService = mealService;
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Meal> addMeal(@RequestBody Meal meal) {
         Meal savedMeal = mealService.save(meal);
@@ -39,19 +41,18 @@ public class MealController {
         Meal meal = mealService.findById(id);
         return ResponseEntity.ok(meal);
     }
-
-    @GetMapping
-    public ResponseEntity<List<MealDto>> getAllMeals() {
-        return ResponseEntity.ok(mealService.findAll());
+    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<MealDto> getAllMealsWithIngredients() {
+        return mealService.getAllMealsWithIngredients();
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Meal> updateMeal(@PathVariable Long id, @RequestBody Meal meal) {
         return ResponseEntity.ok(mealService.update(id, meal));
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMeal(@PathVariable Long id) {
         mealService.delete(id);
@@ -68,7 +69,7 @@ public class MealController {
         }
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/calculateTotalPrice/{mealId}")
     public ResponseEntity<Double> calculateTotalPrice(@PathVariable Long mealId) {
         try {

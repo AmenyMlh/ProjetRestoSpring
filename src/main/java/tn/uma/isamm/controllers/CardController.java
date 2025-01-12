@@ -23,7 +23,7 @@ public class CardController {
     }
 
 	    @PreAuthorize("hasRole('ROLE_ADMIN')")
-	    @PostMapping
+	    @PostMapping("/admin")
 	    public ResponseEntity<Card> saveCard(@RequestBody Card card) {
 	        Card savedCard = cardService.save(card);
 	        return new ResponseEntity<>(savedCard, HttpStatus.CREATED);
@@ -35,22 +35,22 @@ public class CardController {
 	        return new ResponseEntity<>(card, HttpStatus.OK);
 	    }
         
-	    @Secured("hasRole('ROLE_ADMIN')")
-	    @GetMapping
+	    @PreAuthorize("hasRole('ROLE_ADMIN')")
+	    @GetMapping("/admin")
 	    public ResponseEntity<List<Card>> getAllCards() {
 	        List<Card> cards = cardService.findAll();
 	        return new ResponseEntity<>(cards, HttpStatus.OK);
 	    }
 
 	    @PreAuthorize("hasRole('ROLE_ADMIN')")
-	    @PutMapping("/{numCarte}")
+	    @PutMapping("/admin/{numCarte}")
 	    public ResponseEntity<Card> updateCard(@PathVariable String numCarte, @RequestBody Card card) {
 	        Card updatedCard = cardService.update(numCarte, card);
 	        return new ResponseEntity<>(updatedCard, HttpStatus.OK);
 	    }
 
 	    @PreAuthorize("hasRole('ROLE_ADMIN')")
-	    @DeleteMapping("/{numCarte}")
+	    @DeleteMapping("/admin/{numCarte}")
 	    public ResponseEntity<Void> deleteCard(@PathVariable String numCarte) {
 	        cardService.delete(numCarte);
 	        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -65,7 +65,7 @@ public class CardController {
 
 
 	    @PreAuthorize("hasRole('ROLE_STUDENT')")
-	    @PutMapping("/recharge/{numCarte}")
+	    @PutMapping("/student/recharge/{numCarte}")
 	    public ResponseEntity<Card> rechargeCard(@PathVariable String numCarte, @RequestParam Double montant) {
 	        Card rechargedCard = cardService.recharge(numCarte, montant);
 	        return new ResponseEntity<>(rechargedCard, HttpStatus.OK);
@@ -73,7 +73,7 @@ public class CardController {
 
 	  
 	    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-	    @PutMapping("/block/{numCarte}")
+	    @PutMapping("/employee/block/{numCarte}")
 	    public ResponseEntity<Card> blockCard(@PathVariable String numCarte) {
 	        Card blockedCard = cardService.blockCard(numCarte);
 	        return new ResponseEntity<>(blockedCard, HttpStatus.OK);
@@ -81,7 +81,7 @@ public class CardController {
 
 	 
 	    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-	    @PutMapping("/unblock/{numCarte}")
+	    @PutMapping("/employee/unblock/{numCarte}")
 	    public ResponseEntity<Card> unblockCard(@PathVariable String numCarte) {
 	        Card unblockedCard = cardService.unblockCard(numCarte);
 	        return new ResponseEntity<>(unblockedCard, HttpStatus.OK);

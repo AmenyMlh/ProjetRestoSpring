@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tn.uma.isamm.entities.Student;
 import tn.uma.isamm.repositories.StudentRepository;
+import tn.uma.isamm.services.NotificationService;
 import tn.uma.isamm.services.StudentService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -13,18 +14,30 @@ import java.util.List;
 public class StudentServiceImpl implements StudentService {
 
 	private final StudentRepository studentRepository;
+    private final NotificationService notificationService; 
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
+    public StudentServiceImpl(StudentRepository studentRepository, NotificationService notificationService) {
         this.studentRepository = studentRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
     public Student createStudent(Student student) {
+  
         if (studentRepository.existsByEmail(student.getEmail())) {
             throw new IllegalArgumentException("L'email existe déjà : " + student.getEmail());
         }
 
-        return studentRepository.save(student);
+        Student savedStudent = studentRepository.save(student);
+
+        String username = savedStudent.getEmail(); 
+        String password = savedStudent.getPassword(); 
+
+        String message = "Bienvenue ! Votre nom d'utilisateur est : " + username + " et votre mot de passe est : " + password;
+
+        notificationService.sendSms(savedStudent.getPhone(), message);
+
+        return savedStudent;
     }
     
     @Override

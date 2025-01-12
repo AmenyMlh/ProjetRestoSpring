@@ -29,12 +29,9 @@ public class Ingredient {
     
     private double price;
 
-    private int quantity;
+    private double quantity;
 
     private int seuil;
     
     private String unit;
-    
-    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MealIngredient> mealIngredients;
 }

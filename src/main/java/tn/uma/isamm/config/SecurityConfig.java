@@ -13,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.firewall.DefaultHttpFirewall;
+import org.springframework.security.web.firewall.HttpFirewall;
 
 import tn.uma.isamm.services.CustomUserDetailsService;
 
@@ -57,9 +59,19 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeRequests()
                     .requestMatchers("/auth/**").permitAll()
+                    .requestMatchers("/notifications/**").permitAll()
                     .requestMatchers("/admins/**").hasRole("ADMIN")
+                    .requestMatchers("/cards/admin/**").hasRole("ADMIN")  
+                    .requestMatchers("/cards/student/**").hasRole("STUDENT") 
+                    .requestMatchers("/cards/employee/**").hasRole("EMPLOYEE") 
                     .requestMatchers("/cards/**").authenticated()
-                    .requestMatchers("/employees/**", "/ingredients/**", "/meals/**", "/menus/**", "/payments/**", "/statistics/**", "/students/**").permitAll()
+                    .requestMatchers("/ingredients/**").hasRole("ADMIN")
+                    .requestMatchers("/meals/**").hasRole("ADMIN")
+                    .requestMatchers("/menus/**").hasRole("ADMIN")
+                    .requestMatchers("/statistics/**").hasRole("ADMIN")
+                    .requestMatchers("/students/**").hasRole("ADMIN")
+                    .requestMatchers("/payments/**").hasRole("STUDENT")
+                    .requestMatchers("/employees/**").hasRole("ADMIN")
                     .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/swagger-resources", "/api-docs/**").permitAll()
                 .and()
                     .logout()
@@ -77,4 +89,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    
+
 }

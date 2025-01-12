@@ -29,5 +29,5 @@ public class MealIngredient {
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 
-    private int quantity;
+    private double quantity;
 }

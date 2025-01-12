@@ -21,42 +21,42 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Ingredient> createIngredient(@RequestBody Ingredient ingredient) {
         Ingredient savedIngredient = ingredientService.saveIngredient(ingredient);
         return ResponseEntity.ok(savedIngredient);
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Ingredient> updateIngredient(@PathVariable Long id, @RequestBody Ingredient ingredient) {
         Ingredient updatedIngredient = ingredientService.updateIngredient(id, ingredient);
         return ResponseEntity.ok(updatedIngredient);
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteIngredient(@PathVariable Long id) {
         ingredientService.deleteIngredient(id);
         return ResponseEntity.noContent().build();
     }
     
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<Ingredient> getIngredientById(@PathVariable Long id) {
         Ingredient ingredient = ingredientService.getIngredientById(id);
         return ResponseEntity.ok(ingredient);
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<IngredientDto>> getAllIngredients() {
         List<IngredientDto> ingredients = ingredientService.getAllIngredients();
         return ResponseEntity.ok(ingredients);
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/low-stock/{seuil}")
     public ResponseEntity<List<Ingredient>> getLowStockIngredients() {
         List<Ingredient> ingredients = ingredientService.getLowStockIngredients();

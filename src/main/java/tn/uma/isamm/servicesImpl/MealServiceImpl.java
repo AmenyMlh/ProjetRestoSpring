@@ -2,6 +2,7 @@ package tn.uma.isamm.servicesImpl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import tn.uma.isamm.exceptions.InsufficientFundsException;
+import tn.uma.isamm.dto.IngredientDto;
 import tn.uma.isamm.dto.MealDto;
 import tn.uma.isamm.entities.Ingredient;
 import tn.uma.isamm.entities.Meal;
@@ -64,8 +66,6 @@ public class MealServiceImpl implements MealService {
         return mealRepository.save(meal);
     }
 
-
-
     @Override
     public List<MealDto> findAll() {
         return mealRepository.findAll()
@@ -73,6 +73,39 @@ public class MealServiceImpl implements MealService {
                 .map(MealMapper.INSTANCE::toDto)
                 .toList();
     }
+
+    @Override
+    public List<MealDto> getAllMealsWithIngredients() {
+    	 List<Meal> meals = mealRepository.findAllWithIngredients();
+
+    	    return meals.stream().map(meal -> {
+    	        MealDto dto = new MealDto();
+    	        dto.setId(meal.getId());
+    	        dto.setName(meal.getName());
+    	        dto.setPrice(meal.getPrice());
+    	        dto.setMealType(meal.getMealType());
+    	        dto.setDescription(meal.getDescription());
+    	        List<IngredientDto> ingredientDtos = meal.getMealIngredients().stream()
+    	            .map(mi -> {
+    	                IngredientDto ingredientDto = new IngredientDto();
+    	                ingredientDto.setId(mi.getIngredient().getId());
+    	                ingredientDto.setName(mi.getIngredient().getName());
+    	                ingredientDto.setPrice(mi.getIngredient().getPrice());
+    	                ingredientDto.setQuantity(mi.getIngredient().getQuantity());
+    	                ingredientDto.setSeuil(mi.getIngredient().getSeuil());
+
+    	                return ingredientDto;
+    	            })
+    	            .collect(Collectors.toList());
+
+    	        dto.setIngredients(ingredientDtos);
+    	        return dto;
+    	    }).collect(Collectors.toList());
+    }
+
+
+
+
 
     @Override
     public Meal update(Long id, Meal meal) {
@@ -107,7 +140,7 @@ public class MealServiceImpl implements MealService {
 
         for (MealIngredient mealIngredient : meal.getMealIngredients()) {
             Ingredient ingredient = mealIngredient.getIngredient();
-            int usedQuantity = mealIngredient.getQuantity(); 
+            double usedQuantity = mealIngredient.getQuantity(); 
 
             if (ingredient.getQuantity() < usedQuantity) {
                 throw new InsufficientStockException("Stock insuffisant pour l'ingrédient : " + ingredient.getName());
@@ -126,7 +159,7 @@ public class MealServiceImpl implements MealService {
 
         for (MealIngredient mealIngredient : meal.getMealIngredients()) {
             Ingredient ingredient = mealIngredient.getIngredient();
-            int quantity = mealIngredient.getQuantity(); 
+            double quantity = mealIngredient.getQuantity(); 
             double ingredientPrice = ingredient.getPrice(); 
             totalPrice += ingredientPrice * quantity;
         }
@@ -166,7 +199,7 @@ public class MealServiceImpl implements MealService {
 
         for (MealIngredient mealIngredient : meal.getMealIngredients()) {
             Ingredient ingredient = mealIngredient.getIngredient(); 
-            int usedQuantity = mealIngredient.getQuantity(); 
+            double usedQuantity = mealIngredient.getQuantity(); 
 
             if (ingredient.getQuantity() < usedQuantity) {
                 throw new InsufficientStockException("Stock insuffisant pour l'ingrédient : " + ingredient.getName());

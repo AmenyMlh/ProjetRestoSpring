@@ -11,6 +11,8 @@ public class IngredientDto {
 	private Long id;
     private String name;
     private double price;
-    private int quantity;
+    private double quantity;
+    private double usedQuantity;
     private int seuil;
+    private String unit;
 }
