@@ -6,7 +6,6 @@ import tn.uma.isamm.dto.MealDto;
 import tn.uma.isamm.entities.Meal;
 
 public interface MealService {
-	Meal save(Meal meal);
     Meal findById(Long id);
     List<MealDto> findAll();
     Meal update(Long id,Meal meal);
@@ -16,4 +15,5 @@ public interface MealService {
 	double calculateTotalCostForMeals(List<Meal> meals);
 	Meal purchaseMeal(Long mealId, String numCarte);
 	List<MealDto> getAllMealsWithIngredients();
+	Meal save(Meal meal);
 }

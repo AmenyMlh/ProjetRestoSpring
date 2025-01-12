@@ -94,15 +94,17 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<Menu> getMenusByDate(LocalDate date) {
+    public List<MenuDto> getMenusByDate(LocalDate date) {
         List<Menu> menus = menuRepository.findByDate(date);
 
         if (menus.isEmpty()) {
             throw new EntityNotFoundException("Aucun menu trouvé pour la date : " + date);
         }
 
-        return menus;
+        return MenuMapper.INSTANCE.toDTOList(menus);
     }
+
+
 
     @Override
     public List<Menu> getMenusByMealType(MealType type) {

@@ -44,6 +44,7 @@ public class IngredientServiceImpl implements IngredientService {
         existingIngredient.setName(ingredient.getName());
         existingIngredient.setQuantity(ingredient.getQuantity());
         existingIngredient.setSeuil(ingredient.getSeuil());
+        existingIngredient.setUnit(ingredient.getUnit());
         
         return ingredientRepository.save(existingIngredient);
     }

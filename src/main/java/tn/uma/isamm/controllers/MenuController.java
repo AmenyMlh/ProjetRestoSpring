@@ -81,9 +81,9 @@ public class MenuController {
     }
 
     @GetMapping("/byDate/{date}")
-    public ResponseEntity<List<Menu>> getMenusByDate(@PathVariable String date) {
+    public ResponseEntity<List<MenuDto>> getMenusByDate(@PathVariable String date) {
         LocalDate localDate = LocalDate.parse(date);
-        List<Menu> menus = menuService.getMenusByDate(localDate);
+        List<MenuDto> menus = menuService.getMenusByDate(localDate);
         return ResponseEntity.ok(menus);
     }
 

@@ -3,6 +3,9 @@ package tn.uma.isamm.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.authentication.PasswordEncoderParser;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -16,13 +19,18 @@ import java.util.List;
 public class AdminController {
 
 	 private final AdminService adminService;
+	 
+	 private final BCryptPasswordEncoder passwordEncoder;
 
-	    public AdminController(AdminService adminService) {
+	    public AdminController(AdminService adminService, BCryptPasswordEncoder passwordEncoder) {
 	        this.adminService = adminService;
+	        this.passwordEncoder = passwordEncoder;
 	    }
 
     @PostMapping
     public ResponseEntity<Admin> createAdmin(@RequestBody Admin admin) {
+    	String pwd = passwordEncoder.encode(admin.getPassword());
+    	admin.setPassword(pwd);
         Admin savedAdmin = adminService.save(admin);
         return ResponseEntity.ok(savedAdmin);
     }

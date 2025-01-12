@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -42,7 +43,7 @@ public class SecurityConfig {
         AuthenticationManagerBuilder authenticationManagerBuilder = 
                 http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
+                .passwordEncoder(bCryptPasswordEncoder());
         return authenticationManagerBuilder.build();
     }
 
@@ -50,7 +51,7 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setPasswordEncoder(bCryptPasswordEncoder());
         return authProvider;
     }
 
@@ -60,7 +61,8 @@ public class SecurityConfig {
                 .authorizeRequests()
                     .requestMatchers("/auth/**").permitAll()
                     .requestMatchers("/notifications/**").permitAll()
-                    .requestMatchers("/admins/**").hasRole("ADMIN")
+                    //.requestMatchers("/admins/**").hasRole("ADMIN")
+                    .requestMatchers("/admins/**").permitAll()
                     .requestMatchers("/cards/admin/**").hasRole("ADMIN")  
                     .requestMatchers("/cards/student/**").hasRole("STUDENT") 
                     .requestMatchers("/cards/employee/**").hasRole("EMPLOYEE") 
@@ -69,7 +71,8 @@ public class SecurityConfig {
                     .requestMatchers("/meals/**").hasRole("ADMIN")
                     .requestMatchers("/menus/**").hasRole("ADMIN")
                     .requestMatchers("/statistics/**").hasRole("ADMIN")
-                    .requestMatchers("/students/**").hasRole("ADMIN")
+                    //.requestMatchers("/students/**").hasRole("ADMIN")
+                    .requestMatchers("/students/**").permitAll()
                     .requestMatchers("/payments/**").hasRole("STUDENT")
                     .requestMatchers("/employees/**").hasRole("ADMIN")
                     .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/swagger-resources", "/api-docs/**").permitAll()
@@ -86,7 +89,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
     
