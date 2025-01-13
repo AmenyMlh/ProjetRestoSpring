@@ -112,4 +112,15 @@ public class MenuController {
         double totalPrice = menuService.calculateMenuPriceById(menuId);
         return ResponseEntity.ok(totalPrice);
     }
+    
+    @GetMapping("/next-week")
+    public ResponseEntity<List<Menu>> getNextWeekMenus() {
+        try {
+            List<Menu> menus = menuService.getNextWeekMenus();
+            return ResponseEntity.ok(menus);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
 }

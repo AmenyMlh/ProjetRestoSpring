@@ -20,4 +20,5 @@ public interface MenuService {
 	double calculateMenuPriceById(Long menuId);
 	Menu findByDateAndType(LocalDate date, MealType type);
 	void addOrUpdateMenu(Map<String, Object> data);
+	List<Menu> getNextWeekMenus();
 }

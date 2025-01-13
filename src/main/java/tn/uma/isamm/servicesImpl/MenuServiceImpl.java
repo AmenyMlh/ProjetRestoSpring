@@ -181,6 +181,7 @@ public class MenuServiceImpl implements MenuService {
                 .sum();
     }
 
+    @Override
     public List<Menu> getNextWeekMenus() {
         LocalDate today = LocalDate.now();
         LocalDate nextMonday = today.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
