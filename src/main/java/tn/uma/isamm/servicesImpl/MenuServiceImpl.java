@@ -1,8 +1,10 @@
 package tn.uma.isamm.servicesImpl;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,7 +30,7 @@ public class MenuServiceImpl implements MenuService {
     private final MealRepository mealRepository;
     private final MealService mealService;
     private final MenuMapper menuMapper;
-
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public MenuServiceImpl(MenuRepository menuRepository, MealRepository mealRepository, MealService mealService, MenuMapper menuMapper) {
         this.menuRepository = menuRepository;
         this.mealRepository = mealRepository;
@@ -51,7 +53,43 @@ public class MenuServiceImpl implements MenuService {
         return menuRepository.save(menu); 
     }
 
+    @Override
+    public void addOrUpdateMenu(Map<String, Object> data) {
+        String dateStr = (String) data.get("date");
+        LocalDate date = LocalDate.parse(dateStr, formatter);
 
+        List<Long> breakfastMealIds = (List<Long>) data.get("breakfastMeals");
+        List<Long> lunchMealIds = (List<Long>) data.get("lunchMeals");
+        List<Long> dinnerMealIds = (List<Long>) data.get("dinnerMeals");
+
+        handleMenuUpdate(date, MealType.BREAKFAST, breakfastMealIds);
+        handleMenuUpdate(date, MealType.LUNCH, lunchMealIds);
+        handleMenuUpdate(date, MealType.DINNER, dinnerMealIds);
+    }
+
+    private void handleMenuUpdate(LocalDate date, MealType type, List<Long> mealIds) {
+        if (mealIds.isEmpty()) {
+            return;
+        }
+
+        Menu existingMenu = findByDateAndType(date, type);
+
+        if (existingMenu != null) {
+            List<Meal> meals = mealRepository.findAllById(mealIds);
+            existingMenu.setMeals(meals);
+            update(existingMenu.getId(), existingMenu);
+        } else {
+            Menu newMenu = new Menu();
+            newMenu.setType(type);
+            newMenu.setDate(date);
+            save(newMenu, mealIds);
+        }
+    }
+
+    @Override
+    public Menu findByDateAndType(LocalDate date, MealType type) {
+        return menuRepository.findByDateAndType(date, type).orElse(null);
+    }
 
     @Override
     public MenuDto findById(Long id) {

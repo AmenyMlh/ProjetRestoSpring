@@ -1,6 +1,8 @@
 package tn.uma.isamm.servicesImpl;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,39 +19,20 @@ import tn.uma.isamm.repositories.MenuRepository;
 
 @Service
 public class WeeklyMenuServiceImpl {
-	@Autowired
-    private MealRepository mealRepository;
+	
+    private final MealRepository mealRepository;
 
-    @Autowired
-    private MenuRepository menuRepository;
-
-    /*public Map<String, Menu> generateWeeklyMenu() {
-        Map<String, Menu> weeklyMenu = new HashMap<>();
-
-        weeklyMenu.put("Lundi", createMenuForDay("Lundi"));
-        weeklyMenu.put("Mardi", createMenuForDay("Mardi"));
-        weeklyMenu.put("Mercredi", createMenuForDay("Mercredi"));
-        weeklyMenu.put("Jeudi", createMenuForDay("Jeudi"));
-        weeklyMenu.put("Vendredi", createMenuForDay("Vendredi"));
-        weeklyMenu.put("Samedi", createMenuForDay("Samedi"));
-
-        weeklyMenu.values().forEach(menuRepository::save);
-
-        return weeklyMenu;
+    private final MenuRepository menuRepository;
+    
+    public WeeklyMenuServiceImpl (MealRepository mealRepository, MenuRepository menuRepository ) {
+    	this.mealRepository = mealRepository;
+    	this.menuRepository = menuRepository;
     }
 
-    private Menu createMenuForDay(String day) {
-        List<Meal> meals = mealRepository.findByDay(day);
-        
-        if (meals == null || meals.isEmpty()) {
-            throw new EntityNotFoundException("Aucun repas trouvé pour le jour " + day);
-        }
-
-        Menu menu = new Menu();
-        menu.setDate(LocalDate.now());
-        menu.setMeals(meals);
-        menu.setType(MealType.LUNCH); 
-
-        return menu;
-    }*/
+    public List<Menu> getNextWeekMenus() {
+        LocalDate today = LocalDate.now();
+        LocalDate nextMonday = today.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+        LocalDate nextFriday = nextMonday.plusDays(4);
+        return menuRepository.findByDateBetween(nextMonday, nextFriday);
+    }
 }

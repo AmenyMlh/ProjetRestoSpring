@@ -13,4 +13,6 @@ public interface CardRepository extends JpaRepository<Card, String>{
     Optional<Card> findByStudentAndIsBlockedFalse(Student student);
     boolean existsByStudentAndIsBlockedFalse(Student student);
     boolean existsByNumCarte(String numCarte);
+
+	Card findByStudentId(Long studentId);
 }

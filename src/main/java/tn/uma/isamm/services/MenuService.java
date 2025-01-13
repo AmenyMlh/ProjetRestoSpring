@@ -2,6 +2,7 @@ package tn.uma.isamm.services;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import tn.uma.isamm.dto.MenuDto;
 import tn.uma.isamm.entities.Meal;
@@ -17,4 +18,6 @@ public interface MenuService {
 	List<Menu> getMenusByMealType(MealType type);
 	Menu save(Menu menu, List<Long> mealIds);
 	double calculateMenuPriceById(Long menuId);
+	Menu findByDateAndType(LocalDate date, MealType type);
+	void addOrUpdateMenu(Map<String, Object> data);
 }

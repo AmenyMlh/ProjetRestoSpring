@@ -11,6 +11,7 @@ import tn.uma.isamm.entities.Card;
 import tn.uma.isamm.services.CardService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/cards")
@@ -24,9 +25,15 @@ public class CardController {
 
 	    @PreAuthorize("hasRole('ROLE_ADMIN')")
 	    @PostMapping("/admin")
-	    public ResponseEntity<Card> saveCard(@RequestBody Card card) {
-	        Card savedCard = cardService.save(card);
-	        return new ResponseEntity<>(savedCard, HttpStatus.CREATED);
+	    public ResponseEntity<Card> saveCard(@RequestBody Map<String, Object> data) {
+	        try {
+	            Card savedCard = cardService.saveCard(data);
+	            return new ResponseEntity<>(savedCard, HttpStatus.CREATED);
+	        } catch (RuntimeException e) {
+	            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+	        } catch (Exception e) {
+	            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
 	    }
 	    
 	    @PostMapping("/{oldCardNum}/new/{newCardNum}")
@@ -71,7 +78,12 @@ public class CardController {
 	        Double solde = cardService.getSolde(numCarte);
 	        return new ResponseEntity<>(solde, HttpStatus.OK);
 	    }    
-
+	    
+	    @GetMapping("/student/{id}")
+	    public ResponseEntity<Card> getCardByStudentId(@PathVariable("id") Long studentId) {
+	        Card card = cardService.getCardByStudentId(studentId);
+	        return new ResponseEntity<>(card, HttpStatus.OK);
+	    }
 
 	    @PreAuthorize("hasRole('ROLE_STUDENT')")
 	    @PutMapping("/student/recharge/{numCarte}")

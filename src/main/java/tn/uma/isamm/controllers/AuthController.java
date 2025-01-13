@@ -1,5 +1,7 @@
 package tn.uma.isamm.controllers;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,19 +17,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tn.uma.isamm.config.JwtTokenProvider;
 import tn.uma.isamm.dto.LoginRequestDto;
+import tn.uma.isamm.entities.User;
+import tn.uma.isamm.servicesImpl.UserServiceImplement;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-	@Autowired
-    private AuthenticationManager authenticationManager;
 
-	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
+	private final AuthenticationManager authenticationManager;
+	private final JwtTokenProvider jwtTokenProvider;
+    private final UserServiceImplement userService ;
+    
+    public AuthController (AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserServiceImplement userService) {
+    	this.authenticationManager = authenticationManager;
+    	this.jwtTokenProvider = jwtTokenProvider;
+    	this.userService = userService;
+    }
 
-	@PostMapping("/login")
+	@PostMapping("/login") 
 	public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequest) {
-	    System.out.println("Tentative de connexion avec : " + loginRequest);
+	    System.out.println("Tentative de connexion  avec : " + loginRequest);
 
 	    try {
 	    	System.out.println(loginRequest);
@@ -38,9 +47,23 @@ public class AuthController {
 	            )
 	        );
 
-	        String jwt = jwtTokenProvider.generateToken(authentication.getName(),"ROLE_ADMIN");
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-	        return ResponseEntity.ok("Token JWT : " + jwt);
+            User user =  userService.getUserByUserName(loginRequest.getUsername());
+            
+
+            String jwt = jwtTokenProvider.generateToken(user.getUsername(), user.getRole().name()
+               );
+
+            return ResponseEntity.ok().body(Map.of(
+                    "username", user.getUsername(),
+                    "role", user.getRole().name(),
+                    "firstName", user.getFirstName(),
+                    "lastName", user.getLastName(),
+                    "email", user.getEmail(),
+                    "jwt", jwt
+            ));
+
 	    } catch (BadCredentialsException e) {
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nom d'utilisateur ou mot de passe incorrect.");
 	    }

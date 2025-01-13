@@ -1,6 +1,7 @@
 package tn.uma.isamm.servicesImpl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import tn.uma.isamm.entities.Card;
 import tn.uma.isamm.entities.Student;
 import tn.uma.isamm.exceptions.EntityNotFoundException;
 import tn.uma.isamm.repositories.CardRepository;
+import tn.uma.isamm.repositories.StudentRepository;
 import tn.uma.isamm.services.CardService;
 import tn.uma.isamm.services.NotificationService;
 
@@ -17,15 +19,33 @@ import tn.uma.isamm.services.NotificationService;
 public class CardServiceImpl implements CardService {
 
 	private final CardRepository cardRepository;
+	private final StudentRepository studentRepository;
 
-    public CardServiceImpl(CardRepository cardRepository) {
+    public CardServiceImpl(CardRepository cardRepository, StudentRepository studentRepository) {
         this.cardRepository = cardRepository;
+        this.studentRepository = studentRepository;
     }
     
     private static final double SOLDE_MINIMAL = 10.0;
 
     @Override
-    public Card save(Card card) {
+    public Card saveCard(Map<String, Object> data) {
+        String numCarte = (String) data.get("numCarte");
+        
+        Object soldeObj = data.get("solde");
+        Double solde = (soldeObj instanceof Integer) ? ((Integer) soldeObj).doubleValue() : (Double) soldeObj;
+        
+        Long id = ((Integer) data.get("userId")).longValue();
+        
+        Card card = new Card();
+        card.setNumCarte(numCarte);
+        card.setSolde(solde);
+        card.setIsBlocked(false);
+        
+        Student student = studentRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Student not found"));
+        card.setStudent(student);
+        
         return cardRepository.save(card);
     }
     
@@ -162,6 +182,11 @@ public class CardServiceImpl implements CardService {
         card.setSolde(card.getSolde() - amount);
 
         cardRepository.save(card);
+    }
+    
+    @Override
+    public Card getCardByStudentId(Long studentId) {
+        return cardRepository.findByStudentId(studentId);
     }
 
 }

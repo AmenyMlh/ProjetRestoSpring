@@ -1,11 +1,12 @@
 package tn.uma.isamm.services;
 
 import java.util.List;
+import java.util.Map;
 
 import tn.uma.isamm.entities.Card;
 
 public interface CardService {
-	Card save(Card card);
+	//Card save(Card card);
     Card findByNumCarte(String numCarte);
     List<Card> findAll();
     Card update(String numCarte,Card card);
@@ -17,4 +18,6 @@ public interface CardService {
 	void checkCardStatus(String numCarte);
 	void deductFromCard(String numCarte, double amount);
 	Card createNewCardForStudent(String oldCardNum, String newCardNum);
+	Card getCardByStudentId(Long studentId);
+	Card saveCard(Map<String, Object> data);
 }

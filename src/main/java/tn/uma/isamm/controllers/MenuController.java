@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,17 @@ public class MenuController {
 	        Menu savedMenu = menuService.save(menu, mealIds);
 
 	        return ResponseEntity.ok(savedMenu);
+	    }
+	@PreAuthorize("hasRole('ADMIN')")
+	 @PostMapping("/add")
+	    public ResponseEntity<String> addMenuOrUpdate(@RequestBody Map<String, Object> data) {
+	        try {
+	            menuService.addOrUpdateMenu(data);
+	            return ResponseEntity.ok("Menu ajouté avec succès.");
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body("Erreur lors de l'ajout du menu : " + e.getMessage());
+	        }
 	    }
 
     @GetMapping("/{id}")
