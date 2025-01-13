@@ -7,6 +7,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import tn.uma.isamm.dto.CardDto;
 import tn.uma.isamm.entities.Card;
 import tn.uma.isamm.services.CardService;
 
@@ -25,8 +26,9 @@ public class CardController {
 
 	    @PreAuthorize("hasRole('ROLE_ADMIN')")
 	    @PostMapping("/admin")
-	    public ResponseEntity<Card> saveCard(@RequestBody Map<String, Object> data) {
+	    public ResponseEntity<Card> saveCard(@RequestBody CardDto  data) {
 	        try {
+	        	System.out.println(data);
 	            Card savedCard = cardService.saveCard(data);
 	            return new ResponseEntity<>(savedCard, HttpStatus.CREATED);
 	        } catch (RuntimeException e) {
@@ -102,7 +104,7 @@ public class CardController {
 
 	 
 	    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-	    @PutMapping("/employee/unblock/{numCarte}")
+	    @PutMapping("/admin/unblock/{numCarte}")
 	    public ResponseEntity<Card> unblockCard(@PathVariable String numCarte) {
 	        Card unblockedCard = cardService.unblockCard(numCarte);
 	        return new ResponseEntity<>(unblockedCard, HttpStatus.OK);

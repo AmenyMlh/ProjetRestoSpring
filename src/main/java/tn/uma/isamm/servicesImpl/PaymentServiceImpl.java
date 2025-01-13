@@ -24,11 +24,10 @@ import tn.uma.isamm.services.PaymentService;
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
-	 private final PaymentRepository paymentRepository;
+	    private final PaymentRepository paymentRepository;
 	    private final CardRepository cardRepository;
 	    private final MenuRepository menuRepository;
 
-	    @Autowired
 	    public PaymentServiceImpl(PaymentRepository paymentRepository, 
 	                              CardRepository cardRepository, 
 	                              MenuRepository menuRepository) {
@@ -51,6 +50,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 	        payment.setCard(card);
 	        payment.setMenu(menu);
+	        payment.setValidated(false);
 	        paymentRepository.save(payment);
 	    }
 

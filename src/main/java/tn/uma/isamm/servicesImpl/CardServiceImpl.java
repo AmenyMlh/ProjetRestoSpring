@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tn.uma.isamm.dto.CardDto;
 import tn.uma.isamm.entities.Card;
 import tn.uma.isamm.entities.Student;
 import tn.uma.isamm.exceptions.EntityNotFoundException;
@@ -29,13 +30,12 @@ public class CardServiceImpl implements CardService {
     private static final double SOLDE_MINIMAL = 10.0;
 
     @Override
-    public Card saveCard(Map<String, Object> data) {
-        String numCarte = (String) data.get("numCarte");
-        
-        Object soldeObj = data.get("solde");
+    public Card saveCard(CardDto data) {
+        String numCarte = (String) data.getNumCarte();
+        Object soldeObj = data.getSolde();
         Double solde = (soldeObj instanceof Integer) ? ((Integer) soldeObj).doubleValue() : (Double) soldeObj;
         
-        Long id = ((Integer) data.get("userId")).longValue();
+        Long id =  data.getStudent().getId();
         
         Card card = new Card();
         card.setNumCarte(numCarte);
@@ -60,8 +60,7 @@ public class CardServiceImpl implements CardService {
         }
 
         if (!oldCard.getIsBlocked()) {
-            oldCard.setIsBlocked(true);
-            cardRepository.save(oldCard);
+        	throw new RuntimeException("La carte est active.");
         }
 
         Optional<Card> existingActiveCard = cardRepository.findByStudentAndIsBlockedFalse(student);

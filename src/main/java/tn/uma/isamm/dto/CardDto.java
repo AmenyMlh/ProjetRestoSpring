@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class CardDto {
 	    private String numCarte;
-	    private UserDto user;
+	    private StudentDto student;
 	    private Double solde;
-	    private Boolean active;
+	    private Boolean isBlocked;
 }
