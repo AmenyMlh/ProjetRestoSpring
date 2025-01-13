@@ -1,7 +1,9 @@
 package tn.uma.isamm.servicesImpl;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -179,7 +181,12 @@ public class MenuServiceImpl implements MenuService {
                 .sum();
     }
 
-
+    public List<Menu> getNextWeekMenus() {
+        LocalDate today = LocalDate.now();
+        LocalDate nextMonday = today.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+        LocalDate nextFriday = nextMonday.plusDays(4);
+        return menuRepository.findByDateBetween(nextMonday, nextFriday);
+    }
 
 
 }
